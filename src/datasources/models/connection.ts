@@ -16,6 +16,11 @@ const dbConnectionOptions: SequelizeOptions = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
   logging: process.env.NODE_ENV === 'local' ? console.log : false,
+  dialectOptions: {
+    ssl: {
+      rejectUnauthorized: process.env.NODE_ENV === 'production' ? true : false,
+    }
+  },
   models: [__dirname + `/*-model.ts`] ,
 };
 
