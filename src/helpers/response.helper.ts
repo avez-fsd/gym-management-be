@@ -5,16 +5,15 @@ import logger from '@helpers/logger.helper';
 
 const finalResponse = (req: Request, res: Response, message: string, data: any, code: number) => {
   const ok = code.toString().startsWith("2");
-
   if (ok) {
     res.set("Content-Type", `application/json`);
-    res.send(data)
+    res.status(code).send(data)
   } else if (req.headers.accept === `application/json`) {
     res.set("Content-Type", `application/json`);
-    res.send({ message })
+    res.status(code).send({ message })
   } else {
     res.set("Content-Type", `text/html`);
-    res.send(message)
+    res.status(code).send(message)
   }
   return res;
 }
@@ -41,6 +40,7 @@ const handler = {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   handler5xx: (err: any, req: Request, res: Response, next: NextFunction) => {
+    console.log(err,'here eroror')
     const e = err as unknown as CustomException;
     Object.assign(err, { error: err });
 

@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
+import '@datasources/models/connection'
 
 import routes from './routes'
 import addRequestId from '@middelwares/request-id.middleware';

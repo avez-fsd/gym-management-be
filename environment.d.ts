@@ -11,6 +11,7 @@ declare global {
       DB_USERNAME_PAYMENT: string;
       DB_PASSWORD_PAYMENT: string;
 
+      JWT_SECRET: string;
     }
   }
 }
