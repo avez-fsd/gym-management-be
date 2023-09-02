@@ -14,3 +14,11 @@ export const createBusiness = (signUpData: BusinessSignUpRequest, transaction: T
         country: signUpData.country
     }, {transaction})
 }
+
+export const getBusinessByEmail = (email:string) => {
+    return Business.findOne({
+        where: {
+            email
+        }
+    })
+}

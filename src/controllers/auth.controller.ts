@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import response from '@helpers/response.helper'
 import { validateRequest } from "@helpers/validation.helper";
-import { BusinessSignInSchema, BusinessSignUpSchema, VerifyEmail } from "@requests/auth.schema";
+import { BusinessSignInSchema, BusinessSignUpSchema, ResendEmailVerificationSchema, VerifyEmailSchema } from "@requests/auth.schema";
 import AuthService from "@services/auth.service";
 import { BusinessSignInRequest, BusinessSignUpRequest } from "@interfaces/auth.interface";
 import InvalidRequestException from "@exceptions/invalid-request.exception";
@@ -51,10 +51,30 @@ class AuthController {
 
     async verifyEmail(req: Request, res: Response){
         try {
-            validateRequest(VerifyEmail, req.query, req);
+            validateRequest(VerifyEmailSchema, req.query, req);
 
             const authService = new AuthService();
             await authService.verifyEmail(req.query.token as string);
+
+            return response.success(req, res);
+            
+        } catch (err:any) {
+            return response.failed(req, res, err.message, null, err.httpCode);
+        }
+    }
+
+    async resendEmailVerification(req: Request, res: Response){
+        try {
+            validateRequest(ResendEmailVerificationSchema, req.body, req);
+
+            const user = await getUserByEmail(req.body.email);
+
+            if(!user) throw new NotFoundException("User not found");
+
+            if(user.emailVerifiedAt) throw new AccessDeniedException("Email already verified!");
+
+            const authService = new AuthService();
+            await authService.resendEmailVerification(user);
 
             return response.success(req, res);
             

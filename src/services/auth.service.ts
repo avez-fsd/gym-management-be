@@ -1,4 +1,4 @@
-import { createBusiness } from "@datasources/business.datasource";
+import { createBusiness, getBusinessByEmail } from "@datasources/business.datasource";
 import dbConnection from "@datasources/models/connection";
 import User from "@datasources/models/user-model";
 import { getRoleNameById } from "@datasources/role.datasource";
@@ -14,6 +14,9 @@ import { RedisHelper } from "@helpers/redis.helper";
 import NotFoundException from "@exceptions/not-found.exception";
 import InvalidRequestException from "@exceptions/invalid-request.exception";
 import AccessDeniedException from "@exceptions/access-denied.exception";
+import Business from "@datasources/models/business-model";
+import Employee from "@datasources/models/employee-model";
+import { getEmployeeByEmail } from "@datasources/employee.datasource";
 
 class AuthService {
 
@@ -24,22 +27,12 @@ class AuthService {
         try {
 
             const business = await createBusiness(signUpData, transaction);
-            const user = await createUser(signUpData, transaction, business);
+            await createUser(signUpData, transaction, business);
 
             await transaction.commit();
 
-            const token = await generateToken(32);
-
-            RedisHelper.getInstance().set(token as string, user.email, 60 * 60 * 24);
-
-            const commService = new CommunicationService();
-
-            const subject = `Welcome to Gym Management Software ${business.name}`
-            const body = `Please click this link to verify your email: ${process.env.BACKEND_URL}/v1/auth/verify/email?token=${token}`
-
-            commService.sendMail(user.email as string, subject, body);
+            this.sendEmailVerification(business);
             
-
         } catch (err) {
             await transaction.rollback();
             throw err;
@@ -82,6 +75,32 @@ class AuthService {
         
         throw new AccessDeniedException("Email verification failed.");
 
+    }
+
+    async resendEmailVerification(user: User){
+
+        if(user.businessId) {
+            const business = await getBusinessByEmail(user.email as string);
+            this.sendEmailVerification(business as Business);
+        }else {
+            const employee = await getEmployeeByEmail(user.email as string);
+            this.sendEmailVerification(undefined, employee as Employee);
+        }
+
+    }
+
+    async sendEmailVerification(business?: Business, employee?: Employee) {
+
+        const token = await generateToken(32);
+
+        RedisHelper.getInstance().set(token as string, business?.email || employee?.email, 60 * 60 * 24);
+
+        const commService = new CommunicationService();
+
+        const subject = `Welcome to Gym Management Software ${business?.name || employee?.name}`
+        const body = `Please click this link to verify your email: ${process.env.BACKEND_URL}/v1/auth/verify/email?token=${token}`
+
+        commService.sendMail(business?.email as string || employee?.email as string, subject, body);
     }
 
 }
