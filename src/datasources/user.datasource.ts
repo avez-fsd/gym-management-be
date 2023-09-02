@@ -25,7 +25,16 @@ export const createUser = async (signUpData: BusinessSignUpRequest, transaction:
         password: hashedPassword,
         ...(business) && {businessId: business.id},
         ...(employee) && {employeeId: employee.id},
-        roleId: await getRoleIdByName(ROLES.ADMIN),
-        emailVerifiedAt: getCurrentDateTime()
+        roleId: await getRoleIdByName(ROLES.ADMIN)
     }, {transaction})
+}
+
+export const updateEmailVerification = async (email:string) => {
+    return User.update({
+        emailVerifiedAt: getCurrentDateTime()
+    }, {
+        where: {
+            email
+        }
+    })
 }

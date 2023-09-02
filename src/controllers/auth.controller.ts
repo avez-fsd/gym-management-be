@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import response from '@helpers/response.helper'
 import { validateRequest } from "@helpers/validation.helper";
-import { BusinessSignInSchema, BusinessSignUpSchema } from "@requests/auth.schema";
+import { BusinessSignInSchema, BusinessSignUpSchema, VerifyEmail } from "@requests/auth.schema";
 import AuthService from "@services/auth.service";
 import { BusinessSignInRequest, BusinessSignUpRequest } from "@interfaces/auth.interface";
 import InvalidRequestException from "@exceptions/invalid-request.exception";
@@ -49,9 +49,14 @@ class AuthController {
         }
     }
 
-    async verify(req: Request, res: Response){
+    async verifyEmail(req: Request, res: Response){
         try {
-            console.log('test')
+            validateRequest(VerifyEmail, req.body, req);
+
+            const authService = new AuthService();
+            await authService.verifyEmail(req.body.token);
+
+            return response.success(req, res);
             
         } catch (err:any) {
             return response.failed(req, res, err.message, null, err.httpCode);

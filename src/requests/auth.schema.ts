@@ -15,3 +15,7 @@ export const BusinessSignInSchema = Joi.object({
     email: Joi.string().email().required(),
     password: Joi.string().min(8).required()
 });
+
+export const VerifyEmail = Joi.object({
+    token: Joi.string().required()
+});
