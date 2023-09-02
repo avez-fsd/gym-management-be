@@ -30,14 +30,12 @@ class AuthService {
 
             const token = await generateToken(32);
 
-            console.log(token, 'here the token')
-
             RedisHelper.getInstance().set(token as string, user.email, 60 * 60 * 24);
 
             const commService = new CommunicationService();
 
             const subject = `Welcome to Gym Management Software ${business.name}`
-            const body = `Please click this link to verify your email: https://www.google.com/`
+            const body = `Please click this link to verify your email: ${process.env.BACKEND_URL}/v1/auth/verify/email?token=${token}`
 
             commService.sendMail(user.email as string, subject, body);
             

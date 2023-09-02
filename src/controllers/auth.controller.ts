@@ -51,10 +51,10 @@ class AuthController {
 
     async verifyEmail(req: Request, res: Response){
         try {
-            validateRequest(VerifyEmail, req.body, req);
+            validateRequest(VerifyEmail, req.query, req);
 
             const authService = new AuthService();
-            await authService.verifyEmail(req.body.token);
+            await authService.verifyEmail(req.query.token as string);
 
             return response.success(req, res);
             
