@@ -21,3 +21,8 @@ export const PERMISSIONS = {
     CREATE_CUSTOMER_PLAN: 'CREATE_CUSTOMER_PLAN',
     CREATE_BUSINESS_PLAN: 'CREATE_BUSINESS_PLAN'
 }
+
+export const ALLOWED_ORIGINS = [
+  'http://localhost:3000',
+  'https://gms-theta.vercel.app'
+]
