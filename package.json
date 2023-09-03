@@ -1,7 +1,7 @@
 {
-  "name": "ecommerce-backend",
+  "name": "gym-management-backend",
   "version": "1.0.0",
-  "description": "E-commerce backend node app",
+  "description": "Gym management backend node app",
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

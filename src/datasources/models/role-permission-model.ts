@@ -38,6 +38,8 @@ export default class RolePermission extends Model {
     field: 'updated_at',
   })
   updatedAt?: Date;
+
+  permission?:Permission
 }
 
 export function rolePermissionAssociations() {
