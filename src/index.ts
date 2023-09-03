@@ -13,6 +13,11 @@ import { ALLOWED_ORIGINS } from '@constants';
 const app: Express = express();
 const port = process.env.PORT;
 
+const options: CorsOptions = {
+  origin: ALLOWED_ORIGINS
+};
+app.use(cors(options));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -20,10 +25,6 @@ app.use(addRequestId);
 
 app.use('/', routes);
 
-const options: CorsOptions = {
-  origin: ALLOWED_ORIGINS
-};
-app.use(cors(options));
 
 // handle 404 and 5xx http code
 app.use(response.handler404);
