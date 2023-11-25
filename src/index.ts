@@ -16,6 +16,7 @@ const port = process.env.PORT;
 const options: CorsOptions = {
   origin: ALLOWED_ORIGINS
 };
+
 app.use(cors(options));
 
 app.use(express.json());
