@@ -1,2 +1,1 @@
-# gym-management-be
-Gym management backend
+Express Typescript Boilerplate
